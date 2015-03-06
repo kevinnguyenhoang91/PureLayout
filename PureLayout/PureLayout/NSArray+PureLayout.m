@@ -47,11 +47,19 @@
 {
 #if __PureLayout_MinBaseSDK_iOS_8_0 || __PureLayout_MinBaseSDK_OSX_10_10
     if ([NSLayoutConstraint respondsToSelector:@selector(activateConstraints:)]) {
+#if !ZALO_OPTIMIZED
         for (id object in self) {
             if ([object isKindOfClass:[NSLayoutConstraint class]]) {
                 [ALView al_applyGlobalStateToConstraint:object];
             }
         }
+#else
+        [self enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+            if ([object isKindOfClass:[NSLayoutConstraint class]]) {
+                [ALView al_applyGlobalStateToConstraint:object];
+            }
+        }];
+#endif /* !ZALO_OPTIMIZED */
         if ([ALView al_preventAutomaticConstraintInstallation]) {
             [[ALView al_currentArrayOfCreatedConstraints] addObjectsFromArray:self];
         } else {
@@ -61,11 +69,19 @@
     }
 #endif /* __PureLayout_MinBaseSDK_iOS_8_0 || __PureLayout_MinBaseSDK_OSX_10_10 */
     
+#if !ZALO_OPTIMIZED
     for (id object in self) {
         if ([object isKindOfClass:[NSLayoutConstraint class]]) {
             [((NSLayoutConstraint *)object) autoInstall];
         }
     }
+#else
+    [self enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+        if ([object isKindOfClass:[NSLayoutConstraint class]]) {
+            [((NSLayoutConstraint *)object) autoInstall];
+        }
+    }];
+#endif /* !ZALO_OPTIMIZED */
 }
 
 /**
@@ -80,11 +96,20 @@
     }
 #endif /* __PureLayout_MinBaseSDK_iOS_8_0 || __PureLayout_MinBaseSDK_OSX_10_10 */
     
+#if !ZALO_OPTIMIZED
     for (id object in self) {
         if ([object isKindOfClass:[NSLayoutConstraint class]]) {
             [((NSLayoutConstraint *)object) autoRemove];
         }
     }
+#else
+    [self enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+        if ([object isKindOfClass:[NSLayoutConstraint class]]) {
+            [((NSLayoutConstraint *)object) autoRemove];
+        }
+    }];
+#endif /* !ZALO_OPTIMIZED */
+    
 }
 
 #if __PureLayout_MinBaseSDK_iOS_8_0
@@ -99,11 +124,20 @@
  */
 - (instancetype)autoIdentifyConstraints:(NSString *)identifier
 {
+#if !ZALO_OPTIMIZED
     for (id object in self) {
         if ([object isKindOfClass:[NSLayoutConstraint class]]) {
             [((NSLayoutConstraint *)object) autoIdentify:identifier];
         }
     }
+#else
+    [self enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+        if ([object isKindOfClass:[NSLayoutConstraint class]]) {
+            [((NSLayoutConstraint *)object) autoIdentify:identifier];
+        }
+    }];
+#endif /* !ZALO_OPTIMIZED */
+    
     return self;
 }
 
@@ -123,7 +157,13 @@
 {
     NSAssert([self al_containsMinimumNumberOfViews:2], @"This array must contain at least 2 views.");
     NSMutableArray *constraints = [NSMutableArray new];
+#if !ZALO_OPTIMIZED
     ALView *previousView = nil;
+#else
+    __block ALView *previousView = nil;
+#endif /* !ZALO_OPTIMIZED */
+    
+#if !ZALO_OPTIMIZED
     for (id object in self) {
         if ([object isKindOfClass:[ALView class]]) {
             ALView *view = (ALView *)object;
@@ -134,6 +174,18 @@
             previousView = view;
         }
     }
+#else
+    [self enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+        if ([object isKindOfClass:[ALView class]]) {
+            ALView *view = (ALView *)object;
+            view.translatesAutoresizingMaskIntoConstraints = NO;
+            if (previousView) {
+                [constraints addObject:[view autoPinEdge:edge toEdge:edge ofView:previousView]];
+            }
+            previousView = view;
+        }
+    }];
+#endif /* !ZALO_OPTIMIZED */
     return constraints;
 }
 
@@ -148,7 +200,13 @@
 {
     NSAssert([self al_containsMinimumNumberOfViews:2], @"This array must contain at least 2 views.");
     NSMutableArray *constraints = [NSMutableArray new];
+#if !ZALO_OPTIMIZED
     ALView *previousView = nil;
+#else
+    __block ALView *previousView = nil;
+#endif /* !ZALO_OPTIMIZED */
+    
+#if !ZALO_OPTIMIZED
     for (id object in self) {
         if ([object isKindOfClass:[ALView class]]) {
             ALView *view = (ALView *)object;
@@ -159,6 +217,18 @@
             previousView = view;
         }
     }
+#else
+    [self enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+        if ([object isKindOfClass:[ALView class]]) {
+            ALView *view = (ALView *)object;
+            view.translatesAutoresizingMaskIntoConstraints = NO;
+            if (previousView) {
+                [constraints addObject:[view autoAlignAxis:axis toSameAxisOfView:previousView]];
+            }
+            previousView = view;
+        }
+    }];
+#endif /* !ZALO_OPTIMIZED */
     return constraints;
 }
 
@@ -173,7 +243,13 @@
 {
     NSAssert([self al_containsMinimumNumberOfViews:2], @"This array must contain at least 2 views.");
     NSMutableArray *constraints = [NSMutableArray new];
+#if !ZALO_OPTIMIZED
     ALView *previousView = nil;
+#else
+    __block ALView *previousView = nil;
+#endif /* !ZALO_OPTIMIZED */
+    
+#if !ZALO_OPTIMIZED
     for (id object in self) {
         if ([object isKindOfClass:[ALView class]]) {
             ALView *view = (ALView *)object;
@@ -184,6 +260,18 @@
             previousView = view;
         }
     }
+#else
+    [self enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+        if ([object isKindOfClass:[ALView class]]) {
+            ALView *view = (ALView *)object;
+            view.translatesAutoresizingMaskIntoConstraints = NO;
+            if (previousView) {
+                [constraints addObject:[view autoMatchDimension:dimension toDimension:dimension ofView:previousView]];
+            }
+            previousView = view;
+        }
+    }];
+#endif /* !ZALO_OPTIMIZED */
     return constraints;
 }
 
@@ -199,6 +287,8 @@
 {
     NSAssert([self al_containsMinimumNumberOfViews:1], @"This array must contain at least 1 view.");
     NSMutableArray *constraints = [NSMutableArray new];
+    
+#if !ZALO_OPTIMIZED
     for (id object in self) {
         if ([object isKindOfClass:[ALView class]]) {
             ALView *view = (ALView *)object;
@@ -206,6 +296,15 @@
             [constraints addObject:[view autoSetDimension:dimension toSize:size]];
         }
     }
+#else
+    [self enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+        if ([object isKindOfClass:[ALView class]]) {
+            ALView *view = (ALView *)object;
+            view.translatesAutoresizingMaskIntoConstraints = NO;
+            [constraints addObject:[view autoSetDimension:dimension toSize:size]];
+        }
+    }];
+#endif /* !ZALO_OPTIMIZED */
     return constraints;
 }
 
@@ -313,7 +412,13 @@
     CGFloat trailingSpacing = shouldSpaceInsets ? spacing : 0.0;
     
     NSMutableArray *constraints = [NSMutableArray new];
+#if !ZALO_OPTIMIZED
     ALView *previousView = nil;
+#else
+    __block ALView *previousView = nil;
+#endif /* !ZALO_OPTIMIZED */
+    
+#if !ZALO_OPTIMIZED
     for (id object in self) {
         if ([object isKindOfClass:[ALView class]]) {
             ALView *view = (ALView *)object;
@@ -333,6 +438,27 @@
             previousView = view;
         }
     }
+#else
+    [self enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+        if ([object isKindOfClass:[ALView class]]) {
+            ALView *view = (ALView *)object;
+            view.translatesAutoresizingMaskIntoConstraints = NO;
+            if (previousView) {
+                // Second, Third, ... View
+                [constraints addObject:[view autoPinEdge:firstEdge toEdge:lastEdge ofView:previousView withOffset:spacing]];
+                if (shouldMatchSizes) {
+                    [constraints addObject:[view autoMatchDimension:matchedDimension toDimension:matchedDimension ofView:previousView]];
+                }
+                [constraints addObject:[view al_alignAttribute:alignment toView:previousView forAxis:axis]];
+            }
+            else {
+                // First view
+                [constraints addObject:[view autoPinEdgeToSuperviewEdge:firstEdge withInset:leadingSpacing]];
+            }
+            previousView = view;
+        }
+    }];
+#endif /* !ZALO_OPTIMIZED */
     if (previousView) {
         // Last View
         [constraints addObject:[previousView autoPinEdgeToSuperviewEdge:lastEdge withInset:trailingSpacing]];
@@ -450,8 +576,18 @@
  */
 - (ALView *)al_commonSuperviewOfViews
 {
+#if !ZALO_OPTIMIZED
     ALView *commonSuperview = nil;
+#else
+    __block ALView *commonSuperview = nil;
+#endif /* !ZALO_OPTIMIZED */
+#if !ZALO_OPTIMIZED
     ALView *previousView = nil;
+#else
+    __block ALView *previousView = nil;
+#endif /* !ZALO_OPTIMIZED */
+    
+#if !ZALO_OPTIMIZED
     for (id object in self) {
         if ([object isKindOfClass:[ALView class]]) {
             ALView *view = (ALView *)object;
@@ -463,6 +599,19 @@
             previousView = view;
         }
     }
+#else
+    [self enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+        if ([object isKindOfClass:[ALView class]]) {
+            ALView *view = (ALView *)object;
+            if (previousView) {
+                commonSuperview = [view al_commonSuperviewWithView:commonSuperview];
+            } else {
+                commonSuperview = view;
+            }
+            previousView = view;
+        }
+    }];
+#endif /* !ZALO_OPTIMIZED */
     NSAssert(commonSuperview, @"Can't constrain views that do not share a common superview. Make sure that all the views in this array have been added into the same view hierarchy.");
     return commonSuperview;
 }
@@ -475,7 +624,12 @@
  */
 - (BOOL)al_containsMinimumNumberOfViews:(NSUInteger)minimumNumberOfViews
 {
+#if !ZALO_OPTIMIZED
     NSUInteger numberOfViews = 0;
+#else
+    __block NSUInteger numberOfViews = 0;
+#endif /* !ZALO_OPTIMIZED */
+#if !ZALO_OPTIMIZED
     for (id object in self) {
         if ([object isKindOfClass:[ALView class]]) {
             numberOfViews++;
@@ -484,6 +638,20 @@
             }
         }
     }
+#else
+    __block BOOL returnValue = NO;
+    [self enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+        if ([object isKindOfClass:[ALView class]]) {
+            numberOfViews++;
+            if (numberOfViews >= minimumNumberOfViews) {
+                returnValue = YES;
+            }
+        }
+    }];
+    if (returnValue) {
+        return YES;
+    }
+#endif /* !ZALO_OPTIMIZED */
     return numberOfViews >= minimumNumberOfViews;
 }
 
@@ -495,11 +663,19 @@
 - (NSArray *)al_copyViewsOnly
 {
     NSMutableArray *viewsOnlyArray = [NSMutableArray arrayWithCapacity:[self count]];
+#if !ZALO_OPTIMIZED
     for (id object in self) {
         if ([object isKindOfClass:[ALView class]]) {
             [viewsOnlyArray addObject:object];
         }
     }
+#else
+    [self enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
+        if ([object isKindOfClass:[ALView class]]) {
+            [viewsOnlyArray addObject:object];
+        }
+    }];
+#endif /* !ZALO_OPTIMIZED */
     return viewsOnlyArray;
 }
 

@@ -78,6 +78,8 @@
 #   define ALLayoutPriorityFittingSizeLevel            ALLayoutPriorityFittingSizeCompression
 #endif /* TARGET_OS_IPHONE */
 
+/** Flag for enabling optimized codes for Zalo iOS. (KhaNH) */
+#   define ZALO_OPTIMIZED                              1
 
 #pragma mark PureLayout Attributes
 

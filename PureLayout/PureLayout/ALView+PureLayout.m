@@ -242,7 +242,11 @@ static NSMutableArray *_al_globalConstraintIdentifiers = nil;
 {
     NSAssert(block, @"The constraints block cannot be nil.");
     NSAssert(identifier, @"The identifier string cannot be nil.");
+#if ZALO_OPTIMIZED
+    NSAssert(identifier.length, @"The identifier string cannot be empty.");
+#endif /* ZALO_OPTIMIZED */
     if (block) {
+#if !ZALO_OPTIMIZED
         if (identifier) {
             [[self al_globalConstraintIdentifiers] addObject:identifier];
         }
@@ -250,6 +254,16 @@ static NSMutableArray *_al_globalConstraintIdentifiers = nil;
         if (identifier) {
             [[self al_globalConstraintIdentifiers] removeLastObject];
         }
+#else
+        if (identifier && identifier.length > 0) {
+            [[self al_globalConstraintIdentifiers] addObject:identifier];
+        }
+        block();
+        if (identifier && identifier.length > 0) {
+            [[self al_globalConstraintIdentifiers] removeLastObject];
+        }
+#endif /* !ZALO_OPTIMIZED */
+        
     }
 }
 
